@@ -10,3 +10,8 @@ export function salvarRegistro(registro) {
   registros.push({ ...registro, criadoEm: Date.now() });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
 }
+
+export function removerRegistro(criadoEm) {
+  const registros = getRegistros().filter((registro) => registro.criadoEm !== criadoEm);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+}

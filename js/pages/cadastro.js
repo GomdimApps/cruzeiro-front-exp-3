@@ -1,36 +1,46 @@
 import { salvarRegistro } from "../storage.js";
 
-function setErrorVisible(field, visible) {
-  const small = document.querySelector(`[data-error-for="${field}"]`);
-  if (small) small.style.display = visible ? "block" : "none";
+const REGRAS = {
+  nome: (valor) => valor.trim().length > 0,
+  email: (valor) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor),
+  mensagem: (valor) => valor.trim().length > 0,
+};
+
+function setErrorVisible(campo, visivel) {
+  const small = document.querySelector(`[data-error-for="${campo}"]`);
+  if (small) small.style.display = visivel ? "block" : "none";
 }
 
-function validar({ nome, email, mensagem }) {
-  const erros = {};
-  if (!nome.trim()) erros.nome = true;
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) erros.email = true;
-  if (!mensagem.trim()) erros.mensagem = true;
-  return erros;
+function validarCampo(form, campo) {
+  const valido = REGRAS[campo](form[campo].value);
+  setErrorVisible(campo, !valido);
+  return valido;
+}
+
+function validarForm(form) {
+  return Object.keys(REGRAS)
+    .map((campo) => validarCampo(form, campo))
+    .every(Boolean);
 }
 
 export function initCadastro() {
   const form = document.getElementById("cadastro-form");
 
+  Object.keys(REGRAS).forEach((campo) => {
+    form[campo].addEventListener("input", () => validarCampo(form, campo));
+  });
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const dados = {
+    if (!validarForm(form)) return;
+
+    salvarRegistro({
       nome: form.nome.value,
       email: form.email.value,
       mensagem: form.mensagem.value,
-    };
+    });
 
-    const erros = validar(dados);
-    ["nome", "email", "mensagem"].forEach((campo) => setErrorVisible(campo, Boolean(erros[campo])));
-
-    if (Object.keys(erros).length > 0) return;
-
-    salvarRegistro(dados);
     form.reset();
     window.location.hash = "#/lista";
   });

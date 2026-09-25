@@ -10,11 +10,14 @@ export function featureCardTemplate({ title, description }) {
 export function registroCardTemplate({ nome, email, mensagem, criadoEm }) {
   const data = new Date(criadoEm).toLocaleString("pt-BR");
   return `
-    <article class="card">
+    <article class="card" data-id="${criadoEm}">
       <h2>${nome}</h2>
       <p>${email}</p>
       <p>${mensagem}</p>
       <small>${data}</small>
+      <div>
+        <button type="button" class="btn" data-action="remover" data-id="${criadoEm}">Remover</button>
+      </div>
     </article>
   `;
 }
