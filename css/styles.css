@@ -114,6 +114,18 @@ body {
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.form-field input.is-invalid,
+.form-field textarea.is-invalid {
+  border-color: var(--color-danger);
+  background: #fef2f2;
+}
+
+.form-field input.is-valid,
+.form-field textarea.is-valid {
+  border-color: var(--color-success);
 }
 
 .form-field small.error {

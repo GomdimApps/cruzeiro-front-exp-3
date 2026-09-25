@@ -6,14 +6,18 @@ const REGRAS = {
   mensagem: (valor) => valor.trim().length > 0,
 };
 
-function setErrorVisible(campo, visivel) {
+function marcarEstado(form, campo, valido) {
+  const input = form[campo];
   const small = document.querySelector(`[data-error-for="${campo}"]`);
-  if (small) small.style.display = visivel ? "block" : "none";
+
+  input.classList.toggle("is-invalid", !valido);
+  input.classList.toggle("is-valid", valido);
+  if (small) small.style.display = valido ? "none" : "block";
 }
 
 function validarCampo(form, campo) {
   const valido = REGRAS[campo](form[campo].value);
-  setErrorVisible(campo, !valido);
+  marcarEstado(form, campo, valido);
   return valido;
 }
 
